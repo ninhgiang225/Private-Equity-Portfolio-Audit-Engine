@@ -1,0 +1,101 @@
+id,raw_name,ground_truth_name,ground_truth_domain,difficulty
+1,Apple Inc.,Apple Inc.,apple.com,easy
+2,Aple Inc,Apple Inc.,apple.com,hard
+3,APPLE,Apple Inc.,apple.com,medium
+4,Apple Incorporated,Apple Inc.,apple.com,medium
+5,Microsoft Corp,Microsoft Corporation,microsoft.com,easy
+6,Microsft Corporation,Microsoft Corporation,microsoft.com,hard
+7,MSFT,Microsoft Corporation,microsoft.com,hard
+8,microsoft,Microsoft Corporation,microsoft.com,medium
+9,Alphabet Inc,Alphabet Inc.,abc.xyz,easy
+10,Google (Alphabet),Alphabet Inc.,abc.xyz,medium
+11,Googl / Alphabet,Alphabet Inc.,abc.xyz,hard
+12,Amazon.com Inc.,Amazon.com Inc.,amazon.com,easy
+13,Amazon Web Services,Amazon.com Inc.,amazon.com,medium
+14,Amazn,Amazon.com Inc.,amazon.com,hard
+15,Meta Platforms,Meta Platforms Inc.,meta.com,easy
+16,Facebook (Meta),Meta Platforms Inc.,meta.com,medium
+17,META Inc,Meta Platforms Inc.,meta.com,medium
+18,Facebok Platforms,Meta Platforms Inc.,meta.com,hard
+19,Tesla Inc,Tesla Inc.,tesla.com,easy
+20,Tesle Motors,Tesla Inc.,tesla.com,hard
+21,TSLA,Tesla Inc.,tesla.com,hard
+22,Tesla Motors Inc.,Tesla Inc.,tesla.com,medium
+23,Nvidia Corp.,NVIDIA Corporation,nvidia.com,easy
+24,NVidia,NVIDIA Corporation,nvidia.com,medium
+25,NVDA Corp,NVIDIA Corporation,nvidia.com,medium
+26,Nvidia Corporation Inc,NVIDIA Corporation,nvidia.com,medium
+27,Salesforce,Salesforce Inc.,salesforce.com,easy
+28,Saleforce.com,Salesforce Inc.,salesforce.com,hard
+29,SFDC,Salesforce Inc.,salesforce.com,hard
+30,Salesforce CRM,Salesforce Inc.,salesforce.com,medium
+31,Adobe Systems,Adobe Inc.,adobe.com,medium
+32,Adobe Inc,Adobe Inc.,adobe.com,easy
+33,ADBE,Adobe Inc.,adobe.com,hard
+34,Oracle Corp,Oracle Corporation,oracle.com,easy
+35,Oracle Corporation Inc,Oracle Corporation,oracle.com,medium
+36,Oracl,Oracle Corporation,oracle.com,hard
+37,ServiceNow,ServiceNow Inc.,servicenow.com,easy
+38,Service Now Inc.,ServiceNow Inc.,servicenow.com,medium
+39,ServiceNow Inc,ServiceNow Inc.,servicenow.com,easy
+40,Workday Inc.,Workday Inc.,workday.com,easy
+41,Workdai,Workday Inc.,workday.com,hard
+42,WDAY,Workday Inc.,workday.com,hard
+43,Shopify Inc.,Shopify Inc.,shopify.com,easy
+44,Shopify Canada,Shopify Inc.,shopify.com,medium
+45,Shpify,Shopify Inc.,shopify.com,hard
+46,Snowflake Inc,Snowflake Inc.,snowflake.com,easy
+47,Snowflake Computing,Snowflake Inc.,snowflake.com,medium
+48,SNOW Inc.,Snowflake Inc.,snowflake.com,medium
+49,Datadog,Datadog Inc.,datadoghq.com,easy
+50,Data Dog Inc.,Datadog Inc.,datadoghq.com,medium
+51,DDOG,Datadog Inc.,datadoghq.com,hard
+52,MongoDB,MongoDB Inc.,mongodb.com,easy
+53,Mongo DB Inc,MongoDB Inc.,mongodb.com,medium
+54,MDB Corp,MongoDB Inc.,mongodb.com,hard
+55,Confluent Inc.,Confluent Inc.,confluent.io,easy
+56,Confluent Kafka Co,Confluent Inc.,confluent.io,hard
+57,CFLT,Confluent Inc.,confluent.io,hard
+58,HashiCorp,HashiCorp Inc.,hashicorp.com,easy
+59,Hashi Corp,HashiCorp Inc.,hashicorp.com,medium
+60,HashiCorp Inc.,HashiCorp Inc.,hashicorp.com,easy
+61,Twilio Inc,Twilio Inc.,twilio.com,easy
+62,Twilo,Twilio Inc.,twilio.com,hard
+63,TWLO,Twilio Inc.,twilio.com,hard
+64,Zendesk,Zendesk Inc.,zendesk.com,easy
+65,Zen Desk,Zendesk Inc.,zendesk.com,medium
+66,Zendesk Software,Zendesk Inc.,zendesk.com,medium
+67,Hubspot,HubSpot Inc.,hubspot.com,medium
+68,HubSpot Inc.,HubSpot Inc.,hubspot.com,easy
+69,Hub Spot CRM,HubSpot Inc.,hubspot.com,medium
+70,Asana Inc,Asana Inc.,asana.com,easy
+71,Asana Project Mgmt,Asana Inc.,asana.com,medium
+72,Notion Labs,Notion Labs Inc.,notion.so,easy
+73,Notion,Notion Labs Inc.,notion.so,medium
+74,Notion.so Inc,Notion Labs Inc.,notion.so,medium
+75,Figma Inc.,Figma Inc.,figma.com,easy
+76,Figma Design,Figma Inc.,figma.com,medium
+77,FIGMA Corp,Figma Inc.,figma.com,medium
+78,Stripe Inc.,Stripe Inc.,stripe.com,easy
+79,Stripe Payments,Stripe Inc.,stripe.com,medium
+80,Stipe Inc,Stripe Inc.,stripe.com,hard
+81,Plaid Technologies,Plaid Inc.,plaid.com,medium
+82,Plaid Inc,Plaid Inc.,plaid.com,easy
+83,PLAID Fintech,Plaid Inc.,plaid.com,medium
+84,Brex Inc.,Brex Inc.,brex.com,easy
+85,Brex Financial,Brex Inc.,brex.com,medium
+86,BREX Corp,Brex Inc.,brex.com,medium
+87,Rippling Inc.,Rippling Inc.,rippling.com,easy
+88,Riplling,Rippling Inc.,rippling.com,hard
+89,Rippling HR,Rippling Inc.,rippling.com,medium
+90,Lattice HQ,Lattice Inc.,lattice.com,medium
+91,Lattice Inc.,Lattice Inc.,lattice.com,easy
+92,Latice Inc,Lattice Inc.,lattice.com,hard
+93,Scale AI,Scale AI Inc.,scale.com,easy
+94,Scale Artificial Intelligence,Scale AI Inc.,scale.com,medium
+95,ScaleAI Inc.,Scale AI Inc.,scale.com,medium
+96,Weights & Biases,Weights & Biases Inc.,wandb.ai,easy
+97,Weights and Biases,Weights & Biases Inc.,wandb.ai,medium
+98,W&B Inc,Weights & Biases Inc.,wandb.ai,hard
+99,WandB,Weights & Biases Inc.,wandb.ai,hard
+100,Weights&Biases Corp,Weights & Biases Inc.,wandb.ai,hard
