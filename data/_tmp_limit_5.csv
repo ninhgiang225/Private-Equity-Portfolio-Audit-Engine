@@ -1,0 +1,6 @@
+id,raw_name,ground_truth_name,ground_truth_domain,difficulty
+1,Apple Inc.,Apple Inc.,apple.com,easy
+2,Aple Inc,Apple Inc.,apple.com,hard
+3,APPLE,Apple Inc.,apple.com,medium
+4,Apple Incorporated,Apple Inc.,apple.com,medium
+5,Microsoft Corp,Microsoft Corporation,microsoft.com,easy

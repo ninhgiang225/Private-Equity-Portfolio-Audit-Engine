@@ -1,0 +1,21 @@
+id,raw_name,ground_truth_name,ground_truth_domain,difficulty
+1,Apple Inc.,Apple Inc.,apple.com,easy
+2,Aple Inc,Apple Inc.,apple.com,hard
+3,APPLE,Apple Inc.,apple.com,medium
+4,Apple Incorporated,Apple Inc.,apple.com,medium
+5,Microsoft Corp,Microsoft Corporation,microsoft.com,easy
+6,Microsft Corporation,Microsoft Corporation,microsoft.com,hard
+7,MSFT,Microsoft Corporation,microsoft.com,hard
+8,microsoft,Microsoft Corporation,microsoft.com,medium
+9,Alphabet Inc,Alphabet Inc.,abc.xyz,easy
+10,Google (Alphabet),Alphabet Inc.,abc.xyz,medium
+11,Googl / Alphabet,Alphabet Inc.,abc.xyz,hard
+12,Amazon.com Inc.,Amazon.com Inc.,amazon.com,easy
+13,Amazon Web Services,Amazon.com Inc.,amazon.com,medium
+14,Amazn,Amazon.com Inc.,amazon.com,hard
+15,Meta Platforms,Meta Platforms Inc.,meta.com,easy
+16,Facebook (Meta),Meta Platforms Inc.,meta.com,medium
+17,META Inc,Meta Platforms Inc.,meta.com,medium
+18,Facebok Platforms,Meta Platforms Inc.,meta.com,hard
+19,Tesla Inc,Tesla Inc.,tesla.com,easy
+20,Tesle Motors,Tesla Inc.,tesla.com,hard
