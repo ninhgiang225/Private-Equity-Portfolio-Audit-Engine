@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PE Pipeline — Technical Guide & Interview Prep</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@300;400;500&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#0d0f14;
+  --bg2:#131720;
+  --bg3:#1a1f2e;
+  --bg4:#212840;
+  --line:#ffffff0f;
+  --line2:#ffffff18;
+  --txt:#e8e4dc;
+  --txt2:#9b9690;
+  --txt3:#5c5851;
+  --accent:#e8956d;
+  --accent2:#f0c080;
+  --blue:#6eb5e8;
+  --blue-dim:#6eb5e820;
+  --green:#7ec8a0;
+  --green-dim:#7ec8a018;
+  --amber:#e8c46d;
+  --amber-dim:#e8c46d18;
+  --red:#e87d7d;
+  --red-dim:#e87d7d18;
+  --mono:'JetBrains Mono',monospace;
+  --serif:'Playfair Display',serif;
+  --sans:'Lato',sans-serif;
+}
+
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font-family:var(--sans);font-size:15px;line-height:1.7;min-height:100vh}
+
+/* ── Noise overlay ── */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4}
+
+/* ── Layout ── */
+.page{position:relative;z-index:1}
+
+/* ── Hero ── */
+.hero{
+  padding:5rem 3rem 4rem;
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(160deg,#0d0f14 60%,#0e1420 100%);
+  position:relative;overflow:hidden;
+}
+.hero::after{
+  content:'';position:absolute;top:-120px;right:-80px;
+  width:500px;height:500px;
+  background:radial-gradient(circle,#2a3a6020 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero-eyebrow{
+  font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--accent);
+  display:flex;align-items:center;gap:10px;margin-bottom:1.5rem;
+}
+.hero-eyebrow::before{content:'';display:block;width:32px;height:1px;background:var(--accent)}
+.hero h1{
+  font-family:var(--serif);font-size:clamp(2.2rem,5vw,3.6rem);
+  font-weight:700;line-height:1.12;max-width:700px;
+  margin-bottom:1.25rem;
+  background:linear-gradient(135deg,#e8e4dc 40%,#9b9690);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-sub{color:var(--txt2);font-size:16px;max-width:600px;line-height:1.65;margin-bottom:2.5rem}
+.hero-tags{display:flex;flex-wrap:wrap;gap:8px}
+.htag{
+  font-family:var(--mono);font-size:10px;letter-spacing:.08em;
+  padding:3px 10px;border-radius:3px;
+  border:1px solid var(--line2);color:var(--txt2);
+  background:var(--bg2);
+}
+
+/* ── Nav ── */
+nav{
+  position:sticky;top:0;z-index:50;
+  background:rgba(13,15,20,.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+  padding:.75rem 3rem;
+  display:flex;gap:2rem;align-items:center;overflow-x:auto;
+}
+.nav-label{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--txt3);text-transform:uppercase;white-space:nowrap}
+nav a{font-family:var(--mono);font-size:11px;color:var(--txt2);text-decoration:none;white-space:nowrap;transition:color .15s}
+nav a:hover{color:var(--accent)}
+
+/* ── Main content ── */
+main{max-width:980px;margin:0 auto;padding:3rem 2rem 6rem}
+
+/* ── Sections ── */
+.section{margin-bottom:5rem}
+.section-num{
+  font-family:var(--mono);font-size:10px;letter-spacing:.18em;
+  color:var(--accent);text-transform:uppercase;
+  display:flex;align-items:center;gap:10px;margin-bottom:.75rem;
+}
+.section-num::after{content:'';flex:1;height:1px;background:var(--line)}
+h2{font-family:var(--serif);font-size:2rem;font-weight:700;margin-bottom:1rem;color:var(--txt)}
+h3{font-family:var(--sans);font-size:1rem;font-weight:700;color:var(--txt);margin:1.75rem 0 .5rem;letter-spacing:.02em}
+p{color:var(--txt2);margin-bottom:.85rem;line-height:1.72}
+
+/* ── Code ── */
+.code-wrap{
+  background:var(--bg2);border:1px solid var(--line2);
+  border-radius:8px;overflow:hidden;margin:1.25rem 0;
+}
+.code-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.6rem 1rem;background:var(--bg3);
+  border-bottom:1px solid var(--line);
+}
+.code-label{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--txt3);text-transform:uppercase}
+.code-dots{display:flex;gap:5px}
+.code-dot{width:9px;height:9px;border-radius:50%}
+pre{
+  font-family:var(--mono);font-size:12.5px;line-height:1.75;
+  color:#c8c4bc;padding:1.25rem 1.5rem;overflow-x:auto;
+}
+.kw{color:#e8956d}.fn{color:#6eb5e8}.str{color:#7ec8a0}.cm{color:#404a5e;font-style:italic}
+.num{color:#e8c46d}.dec{color:#c87de8}.typ{color:#e8956d}
+
+/* ── Callout boxes ── */
+.callout{
+  border-radius:8px;padding:1.1rem 1.4rem;margin:1.25rem 0;
+  border-left:3px solid;
+}
+.callout-blue{background:var(--blue-dim);border-color:var(--blue)}
+.callout-green{background:var(--green-dim);border-color:var(--green)}
+.callout-amber{background:var(--amber-dim);border-color:var(--amber)}
+.callout-red{background:var(--red-dim);border-color:var(--red)}
+.callout-title{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.35rem}
+.callout-blue .callout-title{color:var(--blue)}
+.callout-green .callout-title{color:var(--green)}
+.callout-amber .callout-title{color:var(--amber)}
+.callout-red .callout-title{color:var(--red)}
+.callout p{margin:0;font-size:13.5px;line-height:1.6}
+
+/* ── Flow diagram ── */
+.flow{display:flex;align-items:center;gap:0;margin:1.5rem 0;flex-wrap:wrap}
+.flow-node{
+  background:var(--bg3);border:1px solid var(--line2);border-radius:8px;
+  padding:.75rem 1.1rem;text-align:center;min-width:110px;
+}
+.flow-node-label{font-family:var(--mono);font-size:10px;color:var(--txt3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.2rem}
+.flow-node-name{font-size:13px;font-weight:700;color:var(--txt)}
+.flow-arrow{padding:0 .5rem;color:var(--txt3);font-size:18px}
+
+/* ── Concept cards ── */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin:1.25rem 0}
+.concept-card{background:var(--bg2);border:1px solid var(--line2);border-radius:10px;padding:1.25rem 1.4rem}
+.concept-icon{font-size:22px;margin-bottom:.6rem}
+.concept-title{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--txt);letter-spacing:.04em;margin-bottom:.4rem}
+.concept-body{font-size:13px;color:var(--txt2);line-height:1.55}
+
+/* ── Threshold table ── */
+.threshold-table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:13.5px}
+.threshold-table th{
+  font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--txt3);text-align:left;padding:.6rem 1rem;
+  border-bottom:1px solid var(--line2);
+}
+.threshold-table td{padding:.65rem 1rem;border-bottom:1px solid var(--line);color:var(--txt2)}
+.threshold-table tr:last-child td{border-bottom:none}
+.badge{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:3px;font-weight:500}
+.badge-green{background:var(--green-dim);color:var(--green);border:1px solid #7ec8a030}
+.badge-amber{background:var(--amber-dim);color:var(--amber);border:1px solid #e8c46d30}
+.badge-red{background:var(--red-dim);color:var(--red);border:1px solid #e87d7d30}
+
+/* ── Q&A accordion ── */
+.qa-section{margin-top:1.5rem}
+.qa-category{
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--accent2);
+  margin:2.5rem 0 1rem;display:flex;align-items:center;gap:10px;
+}
+.qa-category::after{content:'';flex:1;height:1px;background:var(--line)}
+
+.qa-item{
+  border:1px solid var(--line2);border-radius:8px;
+  margin-bottom:.6rem;overflow:hidden;
+  transition:border-color .2s;
+}
+.qa-item:hover{border-color:var(--line2)}
+.qa-item.open{border-color:#6eb5e840}
+
+.qa-q{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:1rem;padding:1rem 1.25rem;cursor:pointer;
+  background:var(--bg2);user-select:none;
+}
+.qa-q:hover{background:var(--bg3)}
+.qa-q-text{
+  font-size:14px;font-weight:700;color:var(--txt);line-height:1.5;flex:1;
+}
+.qa-q-tag{
+  font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:3px;
+  white-space:nowrap;flex-shrink:0;margin-top:2px;
+}
+.tag-concept{background:#6eb5e815;color:var(--blue);border:1px solid #6eb5e820}
+.tag-design{background:#e8956d15;color:var(--accent);border:1px solid #e8956d20}
+.tag-tradeoff{background:#e8c46d15;color:var(--amber);border:1px solid #e8c46d20}
+.tag-deep{background:#c87de815;color:#c87de8;border:1px solid #c87de820}
+.tag-behave{background:#7ec8a015;color:var(--green);border:1px solid #7ec8a020}
+
+.qa-chevron{color:var(--txt3);font-size:16px;transition:transform .25s;flex-shrink:0;margin-top:2px}
+.qa-item.open .qa-chevron{transform:rotate(180deg)}
+
+.qa-a{
+  display:none;padding:1.25rem 1.4rem;
+  background:var(--bg);border-top:1px solid var(--line);
+}
+.qa-item.open .qa-a{display:block}
+.qa-a p{font-size:13.5px;color:var(--txt2);margin-bottom:.7rem}
+.qa-a p:last-child{margin:0}
+.qa-a strong{color:var(--txt);font-weight:700}
+.qa-a .inline-code{
+  font-family:var(--mono);font-size:11.5px;
+  background:var(--bg3);padding:1px 6px;border-radius:3px;
+  color:var(--accent);border:1px solid var(--line2);
+}
+.qa-a ul{list-style:none;display:flex;flex-direction:column;gap:.4rem;margin:.5rem 0}
+.qa-a ul li{display:flex;gap:.6rem;font-size:13.5px;color:var(--txt2)}
+.qa-a ul li::before{content:'→';color:var(--accent);flex-shrink:0}
+
+/* ── Summary table ── */
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0}
+.summary-card{background:var(--bg2);border:1px solid var(--line2);border-radius:8px;padding:1.1rem 1.25rem}
+.summary-card-title{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt3);margin-bottom:.5rem}
+.summary-card ul{list-style:none;display:flex;flex-direction:column;gap:.3rem}
+.summary-card li{font-size:13px;color:var(--txt2);display:flex;gap:.5rem}
+.summary-card li::before{content:'·';color:var(--accent)}
+
+/* ── Footer ── */
+footer{
+  text-align:center;padding:2rem;
+  font-family:var(--mono);font-size:11px;color:var(--txt3);
+  border-top:1px solid var(--line);
+}
+
+/* ── Animations ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.section{animation:fadeUp .5s ease both}
+.section:nth-child(1){animation-delay:.05s}
+.section:nth-child(2){animation-delay:.1s}
+.section:nth-child(3){animation-delay:.15s}
+
+@media(max-width:640px){
+  .hero{padding:3rem 1.25rem 2.5rem}
+  main{padding:2rem 1.25rem 4rem}
+  nav{padding:.75rem 1.25rem}
+  .summary-grid{grid-template-columns:1fr}
+  .flow{flex-direction:column;align-items:flex-start}
+  .flow-arrow{transform:rotate(90deg)}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-eyebrow">Technical Guide & Interview Prep</div>
+  <h1>PE Portfolio Intelligence Pipeline</h1>
+  <p class="hero-sub">A deep walkthrough of LangChain · LangGraph · LLM-as-judge · Langfuse — how every piece works, why it was built this way, and exactly what you'll be asked in interviews.</p>
+  <div class="hero-tags">
+    <span class="htag">LangChain</span>
+    <span class="htag">LangGraph</span>
+    <span class="htag">LLM-as-judge</span>
+    <span class="htag">Langfuse</span>
+    <span class="htag">ReAct Agent</span>
+    <span class="htag">Entity Resolution</span>
+    <span class="htag">BigQuery</span>
+    <span class="htag">Python</span>
+  </div>
+</div>
+
+<!-- ── NAV ── -->
+<nav>
+  <span class="nav-label">Jump to</span>
+  <a href="#overview">Overview</a>
+  <a href="#langgraph">LangGraph</a>
+  <a href="#react">ReAct Agent</a>
+  <a href="#judge">LLM-as-judge</a>
+  <a href="#langfuse">Langfuse</a>
+  <a href="#dataflow">Data Flow</a>
+  <a href="#decisions">Decisions</a>
+  <a href="#qa">Interview Q&A</a>
+</nav>
+
+<main>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 1 — PROJECT OVERVIEW
+══════════════════════════════════════════════ -->
+<section class="section" id="overview">
+  <div class="section-num">01 &nbsp; Project Overview</div>
+  <h2>What this pipeline does — and why it matters</h2>
+
+  <p>Private equity firms and consultants work with company data that arrives in messy, inconsistent formats. A portfolio list might call the same company <em>"Apple Inc."</em>, <em>"AAPL"</em>, <em>"Apple Incorporated"</em>, and <em>"Aple Corp."</em> — all in the same spreadsheet. Manually reconciling these is slow, error-prone, and doesn't scale.</p>
+
+  <p>This pipeline solves that with an automated, end-to-end system: raw company names go in, clean canonical records come out, with every decision traceable and auditable.</p>
+
+  <div class="flow">
+    <div class="flow-node"><div class="flow-node-label">Input</div><div class="flow-node-name">Raw CSV</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node"><div class="flow-node-label">Stage 1</div><div class="flow-node-name">Ingest</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node"><div class="flow-node-label">Stage 2</div><div class="flow-node-name">Resolve</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node"><div class="flow-node-label">Stage 3</div><div class="flow-node-name">Evaluate</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node"><div class="flow-node-label">Stage 4</div><div class="flow-node-name">Export</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node"><div class="flow-node-label">Output</div><div class="flow-node-name">BigQuery</div></div>
+  </div>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🔗</div>
+      <div class="concept-title">LangGraph orchestrates stages</div>
+      <div class="concept-body">A StateGraph manages the four pipeline nodes, holds shared state between them, and routes records conditionally based on the evaluation results.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔍</div>
+      <div class="concept-title">ReAct agent resolves entities</div>
+      <div class="concept-body">An LLM-powered agent reasons about each company name and decides which tool to call — fuzzy match, DB lookup, or web search — until it has a confident answer.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚖️</div>
+      <div class="concept-title">LLM-as-judge scores quality</div>
+      <div class="concept-body">A separate LLM call independently evaluates each resolution, assigns a structured score, and routes the record to accept, human review, or reject.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📡</div>
+      <div class="concept-title">Langfuse traces everything</div>
+      <div class="concept-body">Every LLM call, tool invocation, score, and token count is logged to Langfuse automatically — giving you a full audit trail and cost dashboard.</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 2 — LANGGRAPH
+══════════════════════════════════════════════ -->
+<section class="section" id="langgraph">
+  <div class="section-num">02 &nbsp; LangGraph</div>
+  <h2>How LangGraph orchestrates the pipeline</h2>
+
+  <p>LangGraph is built on top of LangChain and lets you define workflows as a <strong>directed graph</strong>, where each node is a Python function and edges define the flow between them. The key difference from a plain Python script is that it maintains a shared <strong>State</strong> object across all nodes — so every stage can read what the previous stage wrote.</p>
+
+  <h3>Why LangGraph over plain Python?</h3>
+  <p>You <em>could</em> call each stage sequentially in a script. But LangGraph gives you three things a script can't easily provide:</p>
+
+  <div class="callout callout-blue">
+    <div class="callout-title">Key advantage</div>
+    <p><strong>Conditional edges</strong> — after the evaluate node, you can branch: records with review-queue items can pause and wait for human input before export runs. This is the "human-in-the-loop" pattern. A script would need you to hardcode this logic; a graph makes it declarative.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-label">src/pipeline/graph.py — StateGraph definition</span>
+      <div class="code-dots"><div class="code-dot" style="background:#e87d7d"></div><div class="code-dot" style="background:#e8c46d"></div><div class="code-dot" style="background:#7ec8a0"></div></div>
+    </div>
+    <pre><span class="kw">from</span> langgraph.graph <span class="kw">import</span> StateGraph, END
+
+g = <span class="fn">StateGraph</span>(PipelineState)           <span class="cm"># State is a TypedDict shared by all nodes</span>
+
+g.<span class="fn">add_node</span>(<span class="str">"ingest"</span>,   ingest_node)       <span class="cm"># reads CSV → populates state["records"]</span>
+g.<span class="fn">add_node</span>(<span class="str">"resolve"</span>,  resolve_node)      <span class="cm"># runs ReAct agent on each record</span>
+g.<span class="fn">add_node</span>(<span class="str">"evaluate"</span>, evaluate_node)     <span class="cm"># runs LLM judge, fills verdict field</span>
+g.<span class="fn">add_node</span>(<span class="str">"export"</span>,   export_node)       <span class="cm"># writes to CSV + BigQuery</span>
+
+g.<span class="fn">set_entry_point</span>(<span class="str">"ingest"</span>)
+g.<span class="fn">add_edge</span>(<span class="str">"ingest"</span>,  <span class="str">"resolve"</span>)
+g.<span class="fn">add_edge</span>(<span class="str">"resolve"</span>, <span class="str">"evaluate"</span>)
+
+<span class="cm"># Conditional: after evaluate, route based on review queue</span>
+g.<span class="fn">add_conditional_edges</span>(
+    <span class="str">"evaluate"</span>,
+    all_resolved,                          <span class="cm"># routing function</span>
+    {<span class="str">"export"</span>: <span class="str">"export"</span>},               <span class="cm"># map return value → next node</span>
+)
+g.<span class="fn">add_edge</span>(<span class="str">"export"</span>, END)</pre>
+  </div>
+
+  <h3>Understanding PipelineState</h3>
+  <p>State is a <code style="font-family:var(--mono);font-size:12px;background:var(--bg3);padding:1px 6px;border-radius:3px;color:var(--accent)">TypedDict</code> — a Python dictionary with typed keys. Every node receives the <em>entire</em> state and returns the updated state. This is how information flows through the graph without global variables or class instances.</p>
+
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-label">State schema</span><div class="code-dots"><div class="code-dot" style="background:#e87d7d"></div><div class="code-dot" style="background:#e8c46d"></div><div class="code-dot" style="background:#7ec8a0"></div></div></div>
+    <pre><span class="kw">class</span> <span class="typ">PipelineState</span>(TypedDict):
+    input_path:   <span class="fn">str</span>                   <span class="cm"># set at startup, read by ingest_node</span>
+    records:      <span class="fn">list</span>[CompanyRecord]    <span class="cm"># built by ingest, enriched by resolve+evaluate</span>
+    accepted:     <span class="fn">list</span>[CompanyRecord]    <span class="cm"># filled by evaluate_node</span>
+    review_queue: <span class="fn">list</span>[CompanyRecord]    <span class="cm"># filled by evaluate_node</span>
+    rejected:     <span class="fn">list</span>[CompanyRecord]    <span class="cm"># filled by evaluate_node</span>
+    run_id:       <span class="fn">str</span>                   <span class="cm"># UUID for Langfuse trace grouping</span></pre>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 3 — REACT AGENT
+══════════════════════════════════════════════ -->
+<section class="section" id="react">
+  <div class="section-num">03 &nbsp; ReAct Agent</div>
+  <h2>How the entity resolution agent thinks</h2>
+
+  <p><strong>ReAct</strong> stands for <em>Reasoning + Acting</em>. It's a prompting pattern where the LLM alternates between three steps in a loop until it reaches a final answer:</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">💭</div>
+      <div class="concept-title">Thought</div>
+      <div class="concept-body">The LLM reasons about the current situation: "The name 'Aple Inc' looks like a typo of Apple Inc. I should try fuzzy matching first before using an API call."</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔧</div>
+      <div class="concept-title">Action</div>
+      <div class="concept-body">The LLM decides which tool to call and with what arguments: <code style="font-family:var(--mono);font-size:11px">fuzzy_match_tool("Aple Inc")</code></div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">👁️</div>
+      <div class="concept-title">Observation</div>
+      <div class="concept-body">The tool result is fed back to the LLM: "match_found: true, canonical_name: Apple Inc., score: 92". The LLM then decides: stop or keep going.</div>
+    </div>
+  </div>
+
+  <h3>The three tools and their priority order</h3>
+  <p>The agent's system prompt instructs it to try tools in cost-efficiency order — free and fast first, then API calls only if needed.</p>
+
+  <table class="threshold-table">
+    <thead><tr><th>Priority</th><th>Tool</th><th>When used</th><th>Cost</th></tr></thead>
+    <tbody>
+      <tr><td>1st</td><td><code style="font-family:var(--mono);font-size:11px;color:var(--accent)">company_lookup_tool</code></td><td>Exact match in canonical DB (case-insensitive)</td><td>Free — local dict</td></tr>
+      <tr><td>2nd</td><td><code style="font-family:var(--mono);font-size:11px;color:var(--accent)">fuzzy_match_tool</code></td><td>Handles typos, abbreviations, word order</td><td>Free — RapidFuzz</td></tr>
+      <tr><td>3rd</td><td><code style="font-family:var(--mono);font-size:11px;color:var(--accent)">web_search_tool</code></td><td>Unknown companies not in local DB</td><td>Tavily API call</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Why RapidFuzz for fuzzy matching?</h3>
+  <p>RapidFuzz uses <strong>token sort ratio</strong> — it splits both strings into word tokens, sorts them alphabetically, then computes similarity. This handles word-order variations ("Inc. Apple" vs "Apple Inc.") that simple Levenshtein distance would miss. A threshold of 75/100 was chosen empirically — below that, matches were too unreliable.</p>
+
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-label">src/agent/tools.py — fuzzy match logic</span><div class="code-dots"><div class="code-dot" style="background:#e87d7d"></div><div class="code-dot" style="background:#e8c46d"></div><div class="code-dot" style="background:#7ec8a0"></div></div></div>
+    <pre><span class="kw">from</span> rapidfuzz <span class="kw">import</span> process, fuzz
+
+result = process.<span class="fn">extractOne</span>(
+    query,                      <span class="cm"># "aple inc" (lowercased input)</span>
+    candidates,                 <span class="cm"># list of known canonical keys</span>
+    scorer=fuzz.token_sort_ratio  <span class="cm"># handles word-order differences</span>
+)
+<span class="cm"># result = ("apple inc.", 92, 0)  ← (match, score, index)</span>
+
+<span class="kw">if</span> result[<span class="num">1</span>] &lt; threshold:       <span class="cm"># threshold = 75 by default</span>
+    <span class="kw">return</span> {<span class="str">"match_found"</span>: <span class="kw">False</span>}
+<span class="kw">else</span>:
+    <span class="kw">return</span> {<span class="str">"canonical_name"</span>: entry[<span class="str">"canonical"</span>], <span class="str">"similarity_score"</span>: result[<span class="num">1</span>]}</pre>
+  </div>
+
+  <div class="callout callout-amber">
+    <div class="callout-title">Design decision</div>
+    <p>Tools return <strong>JSON strings</strong> (not dicts). This is required by the LangChain tool interface — the agent receives tool outputs as text observations in its context window, so they must be serializable.</p>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 4 — LLM-AS-JUDGE
+══════════════════════════════════════════════ -->
+<section class="section" id="judge">
+  <div class="section-num">04 &nbsp; LLM-as-Judge</div>
+  <h2>How the evaluator scores and routes every match</h2>
+
+  <p>After the resolver agent produces a canonical name, a <em>separate, independent</em> LLM call evaluates the quality of that match. Crucially, the judge uses a <strong>different prompt</strong> and only sees: the raw input, the resolved output, the domain, and the evidence string. It has no access to the resolver's internal reasoning — this prevents the judge from being biased by the resolver's confidence.</p>
+
+  <h3>Structured output with Pydantic</h3>
+  <p>The single most important implementation detail: <code style="font-family:var(--mono);font-size:12px;background:var(--bg3);padding:1px 6px;border-radius:3px;color:var(--accent)">.with_structured_output(MatchVerdict)</code> forces the LLM to return valid JSON that matches the Pydantic schema. No regex parsing, no try/except around JSON loads — if the LLM drifts off-format, LangChain retries automatically.</p>
+
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-label">src/evaluator/judge.py — full evaluator</span><div class="code-dots"><div class="code-dot" style="background:#e87d7d"></div><div class="code-dot" style="background:#e8c46d"></div><div class="code-dot" style="background:#7ec8a0"></div></div></div>
+    <pre><span class="kw">class</span> <span class="typ">MatchVerdict</span>(BaseModel):
+    score:     <span class="fn">int</span> = Field(description=<span class="str">"0–10 match quality"</span>, ge=<span class="num">0</span>, le=<span class="num">10</span>)
+    rationale: <span class="fn">str</span> = Field(description=<span class="str">"One sentence explanation"</span>)
+    verdict:   <span class="fn">str</span> = Field(pattern=<span class="str">"^(accept|review|reject)$"</span>)
+
+<span class="cm"># The chain: prompt → LLM with structured output</span>
+llm   = <span class="fn">ChatOpenAI</span>(model=<span class="str">"gpt-4o-mini"</span>, temperature=<span class="num">0</span>).<span class="fn">with_structured_output</span>(MatchVerdict)
+chain = JUDGE_PROMPT | llm
+
+verdict = chain.<span class="fn">invoke</span>(
+    {<span class="str">"raw_name"</span>: raw_name, <span class="str">"resolved_name"</span>: resolved_name, ...},
+    config={<span class="str">"callbacks"</span>: [langfuse_handler]}  <span class="cm"># auto-traced by Langfuse</span>
+)</pre>
+  </div>
+
+  <h3>Routing thresholds</h3>
+  <p>Three routing zones turn a numeric score into an operational decision:</p>
+
+  <table class="threshold-table">
+    <thead><tr><th>Score</th><th>Verdict</th><th>Action</th><th>Rationale</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>7 – 10</td>
+        <td><span class="badge badge-green">accept</span></td>
+        <td>Written to BigQuery directly</td>
+        <td>High confidence — agent + judge agree</td>
+      </tr>
+      <tr>
+        <td>4 – 6</td>
+        <td><span class="badge badge-amber">review</span></td>
+        <td>Added to <code style="font-family:var(--mono);font-size:11px">review_queue.csv</code></td>
+        <td>Plausible but uncertain — human verifies</td>
+      </tr>
+      <tr>
+        <td>0 – 3</td>
+        <td><span class="badge badge-red">reject</span></td>
+        <td>Flagged as unresolved</td>
+        <td>Judge disagrees — resolution likely wrong</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-green">
+    <div class="callout-title">The human-in-the-loop step</div>
+    <p>The review_queue.csv is where <strong>you</strong> become part of the pipeline. In Week 3, you manually label those 20–30 records and compare your labels against the judge's verdict. If the judge is disagreeing with you significantly, you adjust the prompt or thresholds. This is real evaluation data science.</p>
+  </div>
+
+  <h3>Why temperature=0 for the judge?</h3>
+  <p>Temperature=0 makes the LLM deterministic — the same input always produces the same output. For an evaluator, consistency is more important than creativity. If the judge gave different scores on different runs for the same input, your quality metrics would be meaningless.</p>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 5 — LANGFUSE
+══════════════════════════════════════════════ -->
+<section class="section" id="langfuse">
+  <div class="section-num">05 &nbsp; Langfuse</div>
+  <h2>End-to-end observability — what gets traced and why</h2>
+
+  <p>Langfuse is an open-source LLM observability platform. It captures traces — hierarchical records of everything that happened during an LLM call — so you can debug failures, monitor costs, and analyze output quality over time.</p>
+
+  <h3>How traces work in this pipeline</h3>
+  <p>A single company record triggers <strong>two LLM calls</strong>: one for the resolver agent and one for the judge. Both are linked by the same <code style="font-family:var(--mono);font-size:12px;background:var(--bg3);padding:1px 6px;border-radius:3px;color:var(--accent)">trace_id</code>, so in the Langfuse dashboard you can see the full story of how one company was processed:</p>
+
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-label">Trace hierarchy in Langfuse</span><div class="code-dots"><div class="code-dot" style="background:#e87d7d"></div><div class="code-dot" style="background:#e8c46d"></div><div class="code-dot" style="background:#7ec8a0"></div></div></div>
+    <pre><span class="cm">Trace: run_id=abc123 · company_id=42 · raw="Aple Inc"</span>
+  ├── Span: <span class="str">resolve:Aple Inc</span>
+  │     ├── Tool call: <span class="fn">company_lookup_tool</span>("Aple Inc")  → no match
+  │     ├── Tool call: <span class="fn">fuzzy_match_tool</span>("Aple Inc")     → Apple Inc. (92)
+  │     └── LLM output: {canonical: "Apple Inc.", confidence: 0.95}
+  │         tokens: 312 input / 48 output  latency: 1.2s
+  │
+  └── Span: <span class="str">judge:Aple Inc</span>
+        └── LLM output: {score: 9, verdict: "accept", rationale: "..."}
+            tokens: 280 input / 31 output  latency: 0.8s</pre>
+  </div>
+
+  <h3>What one line of code does</h3>
+  <p>The entire tracing setup requires a single callback handler passed to every chain invocation. Langfuse intercepts LangChain's internal events and logs them automatically:</p>
+
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-label">The only Langfuse code you write</span><div class="code-dots"><div class="code-dot" style="background:#e87d7d"></div><div class="code-dot" style="background:#e8c46d"></div><div class="code-dot" style="background:#7ec8a0"></div></div></div>
+    <pre><span class="kw">from</span> langfuse.callback <span class="kw">import</span> CallbackHandler
+
+handler = <span class="fn">CallbackHandler</span>(trace_id=<span class="str">"abc123_42"</span>, name=<span class="str">"resolve:Aple Inc"</span>)
+
+chain.<span class="fn">invoke</span>(
+    {<span class="str">"input"</span>: <span class="str">"Aple Inc"</span>},
+    config={<span class="str">"callbacks"</span>: [handler]}   <span class="cm"># ← this is all it takes</span>
+)
+<span class="cm"># Langfuse now has: inputs, outputs, token counts, latency, model name</span></pre>
+  </div>
+
+  <h3>What you monitor in the Langfuse dashboard</h3>
+  <div class="concept-grid">
+    <div class="concept-card"><div class="concept-title">Token cost per run</div><div class="concept-body">How many tokens did the resolver vs. judge consume? Is the resolver over-calling web_search (expensive) when fuzzy match would suffice?</div></div>
+    <div class="concept-card"><div class="concept-title">Latency per node</div><div class="concept-body">Which companies took longest to resolve? Are tickers (like MSFT) slower because the agent needs more tool calls to identify them?</div></div>
+    <div class="concept-card"><div class="concept-title">Judge score distribution</div><div class="concept-body">Are most scores clustered at 8–9 (good) or spread across the range (inconsistent resolver)? A bimodal distribution suggests the threshold needs calibration.</div></div>
+    <div class="concept-card"><div class="concept-title">Error traces</div><div class="concept-body">When the agent hits its max_iterations limit or a tool throws an exception, Langfuse captures the full trace so you can debug exactly what went wrong.</div></div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 6 — DATA FLOW
+══════════════════════════════════════════════ -->
+<section class="section" id="dataflow">
+  <div class="section-num">06 &nbsp; Data Flow</div>
+  <h2>What happens to each record, step by step</h2>
+
+  <p>Let's trace a single record — <strong>raw_name: "Stipe Inc"</strong> (a typo of Stripe Inc.) — through the entire pipeline:</p>
+
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-label">Full record lifecycle</span><div class="code-dots"><div class="code-dot" style="background:#e87d7d"></div><div class="code-dot" style="background:#e8c46d"></div><div class="code-dot" style="background:#7ec8a0"></div></div></div>
+    <pre><span class="cm"># 1. INGEST — raw CSV row becomes a CompanyRecord</span>
+record = {<span class="str">"id"</span>: <span class="num">80</span>, <span class="str">"raw_name"</span>: <span class="str">"Stipe Inc"</span>, <span class="str">"verdict"</span>: <span class="str">"pending"</span>, ...}
+
+<span class="cm"># 2. RESOLVE — ReAct agent runs</span>
+<span class="cm">#   Thought: "Stipe Inc — looks like a typo. Try fuzzy match first."</span>
+<span class="cm">#   Action:  fuzzy_match_tool("Stipe Inc")</span>
+<span class="cm">#   Observation: {"match_found": true, "canonical_name": "Stripe Inc.",</span>
+<span class="cm">#                 "domain": "stripe.com", "similarity_score": 82}</span>
+<span class="cm">#   Thought: "Score 82/100, good enough. Final answer:"</span>
+record[<span class="str">"canonical_name"</span>] = <span class="str">"Stripe Inc."</span>
+record[<span class="str">"confidence"</span>]     = <span class="num">0.82</span>
+record[<span class="str">"evidence"</span>]       = <span class="str">"Fuzzy matched score 82/100"</span>
+
+<span class="cm"># 3. EVALUATE — LLM judge scores the match</span>
+<span class="cm">#   Prompt: "Raw: Stipe Inc → Resolved: Stripe Inc. (stripe.com)"</span>
+<span class="cm">#   Output: {score: 7, rationale: "Clear typo, well-known fintech",</span>
+<span class="cm">#            verdict: "accept"}</span>
+record[<span class="str">"judge_score"</span>]    = <span class="num">7</span>
+record[<span class="str">"verdict"</span>]        = <span class="str">"accept"</span>
+
+<span class="cm"># 4. EXPORT — written to BigQuery + resolved_output.csv</span></pre>
+  </div>
+
+  <h3>BigQuery schema</h3>
+  <p>The final table in BigQuery stores the full audit trail — not just the answer, but every intermediate value. This is what "auditable" means in practice:</p>
+
+  <table class="threshold-table">
+    <thead><tr><th>Column</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>id</td><td>INT64</td><td>Original row ID from input CSV</td></tr>
+      <tr><td>raw_name</td><td>STRING</td><td>The messy input as received</td></tr>
+      <tr><td>canonical_name</td><td>STRING</td><td>Resolved official company name</td></tr>
+      <tr><td>domain</td><td>STRING</td><td>Company domain (apple.com etc.)</td></tr>
+      <tr><td>confidence</td><td>FLOAT64</td><td>Agent's self-reported confidence 0–1</td></tr>
+      <tr><td>judge_score</td><td>INT64</td><td>LLM judge score 0–10</td></tr>
+      <tr><td>judge_rationale</td><td>STRING</td><td>One-sentence explanation from judge</td></tr>
+      <tr><td>verdict</td><td>STRING</td><td>accept / review / reject</td></tr>
+      <tr><td>evidence</td><td>STRING</td><td>How the resolution was found</td></tr>
+    </tbody>
+  </table>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 7 — DESIGN DECISIONS
+══════════════════════════════════════════════ -->
+<section class="section" id="decisions">
+  <div class="section-num">07 &nbsp; Key Design Decisions</div>
+  <h2>Why it was built this way — tradeoffs you should know</h2>
+
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="summary-card-title">What worked well</div>
+      <ul>
+        <li>Pydantic structured output eliminated all JSON parsing errors</li>
+        <li>Tool priority order (local first) dramatically reduced API costs</li>
+        <li>Separate judge LLM call made scoring independent and auditable</li>
+        <li>LangGraph state made debugging easy — print state at any node</li>
+        <li>Langfuse callback requires zero boilerplate beyond one import</li>
+      </ul>
+    </div>
+    <div class="summary-card">
+      <div class="summary-card-title">Known limitations</div>
+      <ul>
+        <li>Canonical DB is hand-coded — doesn't scale to 10K+ companies</li>
+        <li>Agent processes serially — slow for large batches without async</li>
+        <li>Judge thresholds (7 / 4) were set manually, not data-driven</li>
+        <li>Web search results are unstructured — LLM parsing can hallucinate</li>
+        <li>No deduplication — same company can appear in multiple rows</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout callout-amber">
+    <div class="callout-title">If you were doing this at production scale</div>
+    <p>Replace the hand-coded canonical DB with a vector database (Pinecone, pgvector) so new companies can be added without code changes. Add <strong>async batch processing</strong> with <code style="font-family:var(--mono);font-size:11px">asyncio.gather()</code> to process 10 companies in parallel. Use Langfuse's dataset feature to formalize your human labels as a reusable eval benchmark.</p>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 8 — INTERVIEW Q&A
+══════════════════════════════════════════════ -->
+<section class="section" id="qa">
+  <div class="section-num">08 &nbsp; Interview Q&amp;A</div>
+  <h2>Every question they might ask — answered</h2>
+  <p>Click any question to reveal a model answer. Tags indicate question type.</p>
+
+  <div class="qa-section">
+
+    <!-- ── CONCEPTUAL ── -->
+    <div class="qa-category">Conceptual — "explain this to me"</div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggle(this)">
+        <span class="qa-q-text">What is LangChain and why did you use it?</span>
+        <span class="qa-q-tag tag-concept">concept</span>
+        <span class="qa-chevron">▾</span>
+      </div>
+      <div class="qa-a">
+        <p>LangChain is a Python framework that provides standardized abstractions for building LLM-powered applications. Rather than writing raw API calls to OpenAI and manually handling prompts, retries, tool parsing, and output formatting, LangChain gives you composable building blocks: <strong>prompts, chains, agents, and tools</strong>.</p>
+        <p>I used it because it handles the hard parts automatically — structured output parsing via Pydantic, tool-call formatting for different LLM providers, and callback hooks that Langfuse uses for observability. Without LangChain, I'd have written hundreds of lines of glue code that would be fragile and hard to test.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggle(this)">
+        <span class="qa-q-text">Explain LangGraph — how is it different from plain LangChain?</span>
+        <span class="qa-q-tag tag-concept">concept</span>
+        <span class="qa-chevron">▾</span>
+      </div>
+      <div class="qa-a">
+        <p>LangChain gives you individual components — chains, agents, tools. LangGraph lets you <strong>compose them into a directed graph</strong> with explicit state management. The key difference is that LangGraph maintains a shared State object across all nodes, so information flows naturally between pipeline stages without global variables or class instances.</p>
+        <p>It also enables <strong>conditional edges</strong> — after evaluation, I can branch based on whether the review queue is empty. In a plain Python script, you'd hardcode if/else logic; in LangGraph, routing is declarative and visible in the graph structure. This matters a lot for production workflows where you need human-in-the-loop steps or retry logic.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggle(this)">
+        <span class="qa-q-text">What is a ReAct agent? Walk me through how it works.</span>
+        <span class="qa-q-tag tag-concept">concept</span>
+        <span class="qa-chevron">▾</span>
+      </div>
+      <div class="qa-a">
+        <p>ReAct stands for <strong>Reasoning + Acting</strong>. It's a prompting pattern where the LLM loops through three steps until it has enough information to answer:</p>
+        <ul>
+          <li><strong>Thought</strong> — the LLM reasons about what it knows and what it needs</li>
+          <li><strong>Action</strong> — it calls a tool with specific arguments</li>
+          <li><strong>Observation</strong> — it reads the tool output and decides what to do next</li>
+        </ul>
+        <p>In my pipeline, the agent reasons about a messy company name, decides to try fuzzy matching first, reads the score back, and either stops (good match) or tries web search (low score). The loop repeats until it has a confident answer or hits <span class="inline-code">max_iterations=5</span>.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggle(this)">
+        <span class="qa-q-text">What is LLM-as-judge and what problem does it solve?</span>
+        <span class="qa-q-tag tag-concept">concept</span>
+        <span class="qa-chevron">▾</span>
+      </div>
+      <div class="qa-a">
+        <p>LLM-as-judge is a quality evaluation pattern where you use one LLM call to score the output of another LLM call. In traditional software, you'd write deterministic tests — but LLM outputs are open-ended text that's hard to test with exact string matching.</p>
+        <p>In my pipeline, the resolver agent produces a canonical name. Instead of manually checking every result, I send the input and output to a <strong>separate judge LLM</strong> that scores the match quality 0–10 and provides a rationale. This scales — you can evaluate 100 resolutions automatically in minutes, with structured scores you can aggregate and dashboard. The limitation is the judge can also be wrong, which is why I also did 20 manual labels and compared them.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggle(this)">
+        <span class="qa-q-text">What is Langfuse and what does it give you that logging doesn't?</span>
+        <span class="qa-q-tag tag-concept">concept</span>
+        <span class="qa-chevron">▾</span>
+      </div>
+      <div class="qa-a">
+        <p>Langfuse is an LLM observability platform. Plain logging gives you text output — you'd have to write your own parsers and dashboards to make sense of it. Langfuse automatically captures <strong>structured traces</strong>: inputs, outputs, token counts, latency, model name, and cost for every LLM call.</p>
+        <p>The critical feature is the <strong>hierarchical trace view</strong> — you can see that a single company record triggered 2 tool calls + 2 LLM calls, how long each took, and exactly what inputs and outputs each one had. When a resolution fails, you can look at the trace and immediately see: was it the fuzzy match that returned wrong? Did the web search return unhelpful content? Logging alone can't give you that navigable, linked view.</p>
+      </div>
+    </div>
+
+    <!-- ── DESIGN ── -->
+    <div class="qa-category">Design choices — "why did you do it this way?"</div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggle(this)">
+        <span class="qa-q-text">Why did you use Pydantic for the judge output? Why not parse the JSON yourself?</span>
+        <span class="qa-q-tag tag-design">design</span>
+        <span class="qa-chevron">▾</span>
+      </div>
+      <div class="qa-a">
+        <p>Two reasons. First, <strong>reliability</strong>: LLMs sometimes return malformed JSON, add markdown backticks, or miss a field. Pydantic with <span class="inline-code">.with_structured_output()</span> tells LangChain to enforce the schema — it retries automatically if the output doesn't validate. Manual parsing means I'd need to write that retry logic myself.</p>
+        <p>Second, <strong>field validation</strong>: I added <span class="inline-code">ge=0, le=10</span> constraints on the score field and a regex pattern on verdict. If the LLM returns score=15 or verdict="maybe", Pydantic catches it immediately rather than silently corrupting downstream data. For a QA pipeline, silent data corruption is the worst possible failure mode.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggle(this)">
+        <span class="qa-q-text">Why did you set the accept threshold at 7 and reject at 4? How would you calibrate those?</span>
+        <span class="qa-q-tag tag-design">design</span>
+        <span class="qa-chevron">▾</span>
+      </div>
+      <div class="qa-a">
+        <p>I set them empirically based on the judge's scoring behavior on a small test set — 7+ felt like "clearly right" and below 4 felt like "clearly wrong." But the real answer is: <strong>you calibrate them with human labels</strong>.</p>
+        <p>The Week 3 exercise is exactly this: label 20 records yourself, then find the threshold that maximizes agreement between your labels and the judge's verdicts. If you label a record "accept" and the judge gives it a 6, should the threshold be 6 instead of 7? That depends on your risk tolerance — a higher threshold means more human review work but fewer wrong auto-accepts. It's a precision vs. recall tradeoff, and in a PE context, the cost of a wrong entity match is high, so you'd bias toward a higher threshold.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggle(this)">
+        <span class="qa-q-text">Why fuzzy matching before web search? Why not just always search the web?</span>
+        <span class="qa-q-tag tag-design">design</span>
+        <span class="qa-chevron">▾</span>
+      </div>
+      <div class="qa-a">
+        <p><strong>Cost and latency.</strong> Web search (Tavily) costs money per call and adds 1–2 seconds of latency. Fuzzy matching is free and runs in milliseconds locally. For a dataset of 100 companies, the difference is small. For 10,000 companies, web search on everything could cost $50+ and take hours vs. seconds for local matching.</p>
+        <p>In practice, most company name variations — typos, abbreviations, different word order — are resolved correctly by fuzzy matching. Web search is the fallback for genuinely unknown companies not in the local canonical database. This is an automation-first, cost-conscious design decision.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggle(this)">
+        <span class="qa-q-text">Why use a separate LLM call for the judge instead of asking the resolver to self-score?</span>
+        <span class="qa-q-tag tag-design">design</span>
+        <span class="qa-chevron">▾</span>
+      </div>
+      <div class="qa-a">
+        <p>Because self-evaluation is biased. If you ask the same model that produced the answer to score its own answer, it will almost always give itself a high score — this is a well-documented LLM failure mode called <strong>sycophancy</strong>.</p>
+        <p>A separate judge call sees only the inputs and outputs, not the internal reasoning chain. This mirrors how peer review works in research — you don't have the author grade their own paper. In practice, using a cheaper model (<span class="inline-code">gpt-4o-mini</span>) for the judge also means the evaluation step adds minimal cost.</p>
+      </div>
+    </div>
+
+    <!-- ── TRADEOFFS ── -->
+    <div class="qa-category">Tradeoffs & scaling — "what would you do differently?"</div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggle(this)">
+        <span class="qa-q-text">How would you scale this to 10,000 companies?</span>
+        <span class="qa-q-tag tag-tradeoff">tradeoff</span>
+        <span class="qa-chevron">▾</span>
+      </div>
+      <div class="qa-a">
+        <p>Three main changes:</p>
+        <ul>
+          <li><strong>Async processing</strong> — replace serial <span class="inline-code">for rec in records</span> with <span class="inline-code">asyncio.gather()</span> to process 20–50 companies concurrently. This alone could reduce runtime 10–20x.</li>
+          <li><strong>Vector database for the canonical store</strong> — the hand-coded dict doesn't scale. Embed all canonical names with OpenAI embeddings, store in Pinecone or pgvector, and use semantic similarity search instead of fuzzy string matching. This handles company name paraphrases that RapidFuzz misses.</li>
+          <li><strong>Skip the agent for easy cases</strong> — run fuzzy matching on every record first, and only invoke the full ReAct agent for records below the fuzzy threshold. Most "easy" typo cases never need an LLM call at all, which dramatically cuts cost.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggle(this)">
+        <span class="qa-q-text">What are the failure modes of this pipeline? What could go wrong?</span>
+        <span class="qa-q-tag tag-tradeoff">tradeoff</span>
+        <span class="qa-chevron">▾</span>
+      </div>
+      <div class="qa-a">
+        <p>Several real failure modes I thought about:</p>
+        <ul>
+          <li><strong>Hallucination in web search</strong> — the LLM might confidently extract a wrong company name from a web page. The judge catches most of these (low score → review), but not all.</li>
+          <li><strong>Fuzzy match false positives</strong> — "Apple Inc." and "Apples Inc." are a 95/100 fuzzy match, but they could be different companies. The judge should catch this with a low score.</li>
+          <li><strong>Agent infinite loop</strong> — if tools keep returning "no match," the agent can loop until <span class="inline-code">max_iterations</span>. I handle this with the fallback null return, which triggers a reject verdict.</li>
+          <li><strong>API rate limiting</strong> — OpenAI and Tavily have rate limits. Large batches without <span class="inline-code">tenacity</span> retry logic will fail silently mid-run.</li>
+          <li><strong>Schema drift</strong> — if the input CSV adds or renames columns, the ingest node breaks. I'd add schema validation at ingest.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggle(this)">
+        <span class="qa-q-text">How do you measure the accuracy of the pipeline?</span>
+        <span class="qa-q-tag tag-tradeoff">tradeoff</span>
+        <span class="qa-chevron">▾</span>
+      </div>
+      <div class="qa-a">
+        <p>The dataset has a <span class="inline-code">ground_truth_name</span> column — this lets me compute exact-match accuracy: what percentage of resolved canonical names exactly match the ground truth. I break this down by difficulty tier (easy / medium / hard) and by verdict (did all "accept" records actually resolve correctly?)</p>
+        <p>A well-calibrated pipeline should have near-100% accuracy on "accept" verdicts — if the judge auto-accepts wrong answers, the thresholds are too low. The dashboard's accuracy section (Week 4) computes this automatically by merging the results with ground truth. In a production setting without ground truth, you'd use the human labels from the review queue as your accuracy signal.</p>
+      </div>
+    </div>
+
+    <!-- ── DEEP DIVE ── -->
+    <div class="qa-category">Deep technical — senior engineer might ask</div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggle(this)">
+        <span class="qa-q-text">What is token_sort_ratio and why is it better than simple string similarity for company names?</span>
+        <span class="qa-q-tag tag-deep">deep</span>
+        <span class="qa-chevron">▾</span>
+      </div>
+      <div class="qa-a">
+        <p>Simple Levenshtein distance measures character-level edit distance — it's sensitive to word order. "Apple Inc." vs "Inc. Apple" would score poorly even though they're the same company.</p>
+        <p><strong>Token sort ratio</strong> solves this: it splits both strings into tokens (words), sorts them alphabetically, joins them back, then runs Levenshtein on the sorted versions. So "Apple Inc." → "apple inc" and "Inc. Apple" → "apple inc" become identical after sorting — 100/100 match. For company names where word order varies ("Corp Microsoft" vs "Microsoft Corp"), this is a significant improvement over plain ratio.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggle(this)">
+        <span class="qa-q-text">Why does the tool return a JSON string instead of a dict?</span>
+        <span class="qa-q-tag tag-deep">deep</span>
+        <span class="qa-chevron">▾</span>
+      </div>
+      <div class="qa-a">
+        <p>The LangChain ReAct agent places tool outputs into the LLM's context window as text — specifically as "Observation:" strings in the prompt. The context window is pure text, so tool outputs must be serializable strings. A Python dict would be converted via <span class="inline-code">str()</span> which produces ugly, inconsistent formatting.</p>
+        <p>By returning <span class="inline-code">json.dumps(result)</span> explicitly, I control the exact format the agent sees. The agent is then instructed in its system prompt to parse the JSON observation before acting on it. This is a common pattern in LangChain tool development.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggle(this)">
+        <span class="qa-q-text">What is the difference between a LangChain Chain and an Agent?</span>
+        <span class="qa-q-tag tag-deep">deep</span>
+        <span class="qa-chevron">▾</span>
+      </div>
+      <div class="qa-a">
+        <p>A <strong>Chain</strong> is a fixed sequence of steps — prompt → LLM → output parser. The flow is deterministic and hardcoded. You use chains when you know exactly what steps are needed.</p>
+        <p>An <strong>Agent</strong> is dynamic — the LLM itself decides at runtime which tools to call, in what order, and when to stop. It's flexible but less predictable and more expensive. I used an agent for entity resolution because the number of tool calls varies per company: a clean name needs zero LLM calls (just DB lookup), while an unknown ticker might need two tool calls before the agent has enough information. A chain couldn't express this variable branching logic.</p>
+      </div>
+    </div>
+
+    <!-- ── BEHAVIORAL ── -->
+    <div class="qa-category">Behavioral — "tell me about a challenge"</div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggle(this)">
+        <span class="qa-q-text">What was the hardest part of building this project?</span>
+        <span class="qa-q-tag tag-behave">behavioral</span>
+        <span class="qa-chevron">▾</span>
+      </div>
+      <div class="qa-a">
+        <p>The hardest part was <strong>calibrating the judge thresholds</strong>. When I first ran the pipeline, I noticed the judge was giving scores of 7–8 to matches I personally would have flagged for review — the agent had resolved "SFDC" to "Salesforce Inc." correctly, but the evidence string was thin, and I wasn't confident. I had to do 20 manual labels, compute where my judgments diverged from the model's, and adjust both the judge prompt and the thresholds.</p>
+        <p>This was actually the most valuable learning: building an LLM system is not just engineering — it's empirical. You form hypotheses about where it'll fail, generate data to test them, and iterate. The human-in-the-loop step isn't a workaround; it's the ground truth calibration loop that makes the whole system trustworthy.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggle(this)">
+        <span class="qa-q-text">If you had two more weeks, what would you add?</span>
+        <span class="qa-q-tag tag-behave">behavioral</span>
+        <span class="qa-chevron">▾</span>
+      </div>
+      <div class="qa-a">
+        <p>Two things with the highest impact:</p>
+        <ul>
+          <li><strong>Formalize the eval benchmark in Langfuse</strong> — upload my 20 manual labels as a Langfuse Dataset, then run automated eval on every code change. Right now, checking whether my changes improved accuracy is manual. A dataset + automated scorer would make it a one-command check.</li>
+          <li><strong>Async batch processing</strong> — the pipeline currently processes companies serially, one at a time. With <span class="inline-code">asyncio.gather()</span> and a semaphore to respect rate limits, I could process 10+ companies in parallel and cut total runtime by 5–10x. This would make the pipeline practical for real PE datasets that often have 500–2000 companies.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- /.qa-section -->
+</section>
+
+</main>
+
+<footer>PE Portfolio Intelligence Pipeline · Technical Guide & Interview Prep · Built for upskilling in LangChain, LangGraph, LLM-as-judge, and Langfuse</footer>
+
+</div>
+
+<script>
+function toggle(el) {
+  const item = el.parentElement;
+  item.classList.toggle('open');
+}
+</script>
+</body>
+</html>
