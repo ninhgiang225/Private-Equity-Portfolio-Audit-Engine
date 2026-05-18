@@ -64,7 +64,7 @@ def build_graph() -> StateGraph:
 
 
 # ── Entry point ───────────────────────────────────────────────────────────────
-def run_pipeline(input_path: str = "../data/raw_companies.csv", limit: int | None = None) -> PipelineState:
+def run_pipeline(input_path: str = "data/raw_companies.csv", limit: int | None = None) -> PipelineState:
     import pandas as pd
 
     graph    = build_graph().compile()
@@ -102,7 +102,7 @@ def run_pipeline(input_path: str = "../data/raw_companies.csv", limit: int | Non
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run the PE entity resolution pipeline")
-    parser.add_argument("--input", default="../data/raw_companies.csv")
+    parser.add_argument("--input", default="data/raw_companies.csv")
     parser.add_argument("--limit", type=int, default=None, help="Process only N rows (dev mode)")
     args = parser.parse_args()
 

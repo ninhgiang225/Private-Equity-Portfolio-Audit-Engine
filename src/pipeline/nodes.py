@@ -127,11 +127,11 @@ def export_node(state: PipelineState) -> PipelineState:
     all_df    = pd.DataFrame(state["records"])
     review_df = pd.DataFrame(state["review_queue"])
 
-    all_df.to_csv("../data/resolved_output.csv", index=False)
+    all_df.to_csv("data/resolved_output.csv", index=False)
     print(f"[export] Wrote {len(all_df)} rows → data/resolved_output.csv")
 
     if not review_df.empty:
-        review_df.to_csv("../data/review_queue.csv", index=False)
+        review_df.to_csv("data/review_queue.csv", index=False)
         print(f"[export] Wrote {len(review_df)} rows → data/review_queue.csv (needs human review)")
 
     # ── Optional BigQuery write (uncomment in Week 4) ──────────────────────

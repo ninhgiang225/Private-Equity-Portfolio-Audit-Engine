@@ -4,6 +4,9 @@ A LangChain + LangGraph pipeline that ingests messy company name lists,
 resolves entities to their canonical form, evaluates match quality with
 LLM-as-judge, and traces everything end-to-end via Langfuse.
 
+
+![alt text](images/image.png) ![alt text](images/image_2.png)
+
 ## Project structure
 
 ```
@@ -55,6 +58,9 @@ cp .env.example .env
 
 # 4. Run the full pipeline
 python -m src.pipeline.graph
+
+# 5. Run dashboarding on local host
+streamlit run app.py   
 ```
 
 ## Four learning milestones
